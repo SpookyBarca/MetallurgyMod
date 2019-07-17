@@ -1,0 +1,9 @@
+//items
+item.chisel.name=Chisel
+
+//blocks
+tile.extracted_iron_ore.name=Extracted Iron Ore
+tile.grinder.name=Grinder
+
+//creative tabs
+itemGroup.metallurgy=Metallurgy
