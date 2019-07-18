@@ -4,20 +4,24 @@ import com.ssbbpeople.metallurgy.util.Reference;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+
 
 public class GuiGrinder extends GuiContainer
 {
 	private static final ResourceLocation GRINDER_TEXTURE = new ResourceLocation(Reference.MOD_ID + ":textures/gui/grinder");
 	private final InventoryPlayer playerInventory;
-	private final IInventory tileFurnace;
+	private final TileEntityGrinder tileentity;
+    private static final int WIDTH = 256;
+    private static final int HEIGHT = 210;
 	
-	public GuiGrinder(InventoryPlayer playerInv, IInventory furnaceInv) 
+	public GuiGrinder(InventoryPlayer playerInv, TileEntityGrinder furnaceInv) 
 	{
-		super(new ContainerGrinder(playerInv, furnaceInv));
+		super(new ContainerFurnace(playerInv, furnaceInv));
 		this.playerInventory = playerInv;
-		this.tileFurnace = furnaceInv;
+		this.tileentity = furnaceInv;
 	}
 	
 	@Override
@@ -31,7 +35,7 @@ public class GuiGrinder extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) 
 	{
-		String s = this.tileFurnace.getDisplayName().getUnformattedText();
+		String s = this.tileentity.getDisplayName().getUnformattedText();
 		this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
 		this.fontRenderer.drawString(this.playerInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
 	}
@@ -44,7 +48,7 @@ public class GuiGrinder extends GuiContainer
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 
-        if (TileEntityGrinder.isBurning(this.tileFurnace))
+        if (TileEntityGrinder.isBurning(this.tileentity))
         {
             int k = this.getBurnLeftScaled(13);
             this.drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
@@ -56,18 +60,18 @@ public class GuiGrinder extends GuiContainer
 	
 	private int getCookProgressScaled(int pixels)
 	{
-		int i = this.tileFurnace.getField(2);
-		int j = this.tileFurnace.getField(3);
+		int i = this.tileentity.getField(2);
+		int j = this.tileentity.getField(3);
 		return j != 0 && i != 0 ? i * pixels / j : 0;
 	}
 	
 	private int getBurnLeftScaled(int pixels)
 	{
-		int i = this.tileFurnace.getField(1);
+		int i = this.tileentity.getField(1);
 		if(i == 0)
 		{
 			i = 200;
 		}
-		return this.tileFurnace.getField(0) * pixels / i;
+		return this.tileentity.getField(0) * pixels / i;
 	}
 }

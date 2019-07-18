@@ -11,9 +11,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
 public class ModBlocks 
-{
+	{
 	public static final List<Block> BLOCKS = new ArrayList<Block>();
 	
 	public static final Block EXTRACTED_IRON_ORE = new ExtractedIronOre("extracted_iron_ore", Material.IRON);
 	public static final Block GRINDER = new Grinder("grinder");
-}
+	
+	}
+
+

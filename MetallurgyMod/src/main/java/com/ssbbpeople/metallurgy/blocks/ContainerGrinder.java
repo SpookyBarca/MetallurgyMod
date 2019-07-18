@@ -10,15 +10,20 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class ContainerGrinder extends Container
 {
-	private final IInventory tileFurnace;
+	private final IInventory tileEntityGrinder;
+	TileEntityGrinder tileentity;
+    private IItemHandler InvHandler;
 	private int cookTime, totalCookTime, ovenBurnTime, currentItemBurnTime;
 	
-	public ContainerGrinder(InventoryPlayer playerInventory, IInventory furnaceInventory) 
+	public ContainerGrinder(InventoryPlayer playerInventory, IInventory furnaceInventory, TileEntityGrinder containerTileEntity) 
 	{
-		this.tileFurnace = furnaceInventory;
+		this.tileentity = containerTileEntity;
+		this.tileEntityGrinder = furnaceInventory;
 		this.addSlotToContainer(new Slot(furnaceInventory, 0, 56, 17));
 		this.addSlotToContainer(new SlotGrinderFuel(furnaceInventory, 1, 56, 53));
 		this.addSlotToContainer(new SlotGrinderOutput(playerInventory.player, furnaceInventory, 2, 116, 35));
@@ -37,11 +42,17 @@ public class ContainerGrinder extends Container
 		}
 	}
 	
+	public ContainerGrinder(IInventory playerInventory, IInventory furnaceInventory, TileEntityGrinder containerTileEntity) {
+		this.tileentity = containerTileEntity;
+		this.tileEntityGrinder = furnaceInventory;
+        this.InvHandler = tileentity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+	}
+
 	@Override
 	public void addListener(IContainerListener listener) 
 	{
 		super.addListener(listener);
-		listener.sendAllWindowProperties(this, this.tileFurnace);
+		listener.sendAllWindowProperties(this, this.tileEntityGrinder);
 	}
 	
 	@Override
@@ -53,43 +64,43 @@ public class ContainerGrinder extends Container
         {
             IContainerListener icontainerlistener = this.listeners.get(i);
 
-            if (this.cookTime != this.tileFurnace.getField(2))
+            if (this.cookTime != this.tileEntityGrinder.getField(2))
             {
-                icontainerlistener.sendWindowProperty(this, 2, this.tileFurnace.getField(2));
+                icontainerlistener.sendWindowProperty(this, 2, this.tileEntityGrinder.getField(2));
             }
 
-            if (this.ovenBurnTime != this.tileFurnace.getField(0))
+            if (this.ovenBurnTime != this.tileEntityGrinder.getField(0))
             {
-                icontainerlistener.sendWindowProperty(this, 0, this.tileFurnace.getField(0));
+                icontainerlistener.sendWindowProperty(this, 0, this.tileEntityGrinder.getField(0));
             }
 
-            if (this.currentItemBurnTime != this.tileFurnace.getField(1))
+            if (this.currentItemBurnTime != this.tileEntityGrinder.getField(1))
             {
-                icontainerlistener.sendWindowProperty(this, 1, this.tileFurnace.getField(1));
+                icontainerlistener.sendWindowProperty(this, 1, this.tileEntityGrinder.getField(1));
             }
 
-            if (this.totalCookTime != this.tileFurnace.getField(3))
+            if (this.totalCookTime != this.tileEntityGrinder.getField(3))
             {
-                icontainerlistener.sendWindowProperty(this, 3, this.tileFurnace.getField(3));
+                icontainerlistener.sendWindowProperty(this, 3, this.tileEntityGrinder.getField(3));
             }
         }
 
-        this.cookTime = this.tileFurnace.getField(2);
-        this.ovenBurnTime = this.tileFurnace.getField(0);
-        this.currentItemBurnTime = this.tileFurnace.getField(1);
-        this.totalCookTime = this.tileFurnace.getField(3);
+        this.cookTime = this.tileEntityGrinder.getField(2);
+        this.ovenBurnTime = this.tileEntityGrinder.getField(0);
+        this.currentItemBurnTime = this.tileEntityGrinder.getField(1);
+        this.totalCookTime = this.tileEntityGrinder.getField(3);
 	}
 	
 	@Override
 	public void updateProgressBar(int id, int data) 
 	{
-		this.tileFurnace.setField(id, data);
+		this.tileEntityGrinder.setField(id, data);
 	}
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) 
 	{
-		return  this.tileFurnace.isUsableByPlayer(playerIn);
+		return  this.tileEntityGrinder.isUsableByPlayer(playerIn);
 	}
 	
 	@Override

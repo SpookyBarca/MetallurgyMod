@@ -3,9 +3,11 @@ package com.ssbbpeople.metallurgy.init;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ssbbpeople.metallurgy.blocks.Grinder;
 import com.ssbbpeople.metallurgy.items.Chisel;
 import com.ssbbpeople.metallurgy.items.ItemBase;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
 public class ModItems 
@@ -15,6 +17,6 @@ public class ModItems
 	
 	public static final Item CHISEL = new Chisel("chisel");
 	public static final Item PULVERIZED_IRON = new Chisel("pulverized_iron");
-	
+	public static final Grinder GRINDER = new Grinder("grinder");
 	
 }

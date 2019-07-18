@@ -21,18 +21,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.datafix.walkers.ItemStackDataLists;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import scala.actors.threadpool.Arrays;
 
-public class TileEntityGrinder extends TileEntityLockable implements ITickable, ISidedInventory
+public class TileEntityGrinder extends TileEntityFurnace implements ITickable, ISidedInventory
 {
 	private static final int[] SLOTS_TOP = new int[] {0};
 	private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
@@ -44,6 +49,16 @@ public class TileEntityGrinder extends TileEntityLockable implements ITickable, 
 	private int totalCookTime;
 	private String furnaceCustomName;
 	
+	public static void initialize() {
+		GameRegistry.registerTileEntity(TileEntityGrinder.class, new ResourceLocation("mm:textures/gui/grinder"));
+	}
+	
+	public TileEntityGrinder () {
+		super();
+		ItemStack[] inventory = new ItemStack[1 + 1 + 1 + 1];
+		Arrays.fill(inventory, ItemStack.EMPTY);
+	}
+
 	@Override
 	public int getSizeInventory() 
 	{
@@ -103,7 +118,7 @@ public class TileEntityGrinder extends TileEntityLockable implements ITickable, 
 	@Override
 	public String getName() 
 	{
-		return this.hasCustomName() ? this.furnaceCustomName : "container.silver_furnace";
+		return this.hasCustomName() ? this.furnaceCustomName : "container.grinder";
 	}
 	
 	@Override
@@ -131,7 +146,8 @@ public class TileEntityGrinder extends TileEntityLockable implements ITickable, 
         this.cookTime = compound.getInteger("CookTime");
         this.totalCookTime = compound.getInteger("CookTimeTotal");
         this.currentItemBurnTime = getItemBurnTime(this.furnaceItemStacks.get(1));
-
+        ResourceLocation resourcelocation = new ResourceLocation(Reference.MOD_ID + ":textures/gui/grinder");
+        
         if (compound.hasKey("CustomName", 8))
         {
             this.furnaceCustomName = compound.getString("CustomName");
@@ -416,13 +432,17 @@ public class TileEntityGrinder extends TileEntityLockable implements ITickable, 
     	return true;
     }
     
-    @Override
     public String getGuiID() 
     {
-    	return Reference.MOD_ID + ":grinder";
+    	return "mm:grinder";
+    }
+    public Object getGuiClient(InventoryPlayer inventory) {
+    	return new GuiGrinder(inventory, this);
+    }
+    public Object getGuiServer(InventoryPlayer inventory) {
+    	return new ContainerGrinder(inventory, this);
     }
     
-    @Override
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) 
     {
     	return new ContainerGrinder(playerInventory, this);
